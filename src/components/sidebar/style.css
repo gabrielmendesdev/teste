@@ -1,0 +1,5 @@
+.sidebar {
+    width: max-content;
+    border-right: 2px solid rgba(187, 187, 187, 0.363);
+    border-bottom: 2px solid rgba(187, 187, 187, 0.363);
+}
