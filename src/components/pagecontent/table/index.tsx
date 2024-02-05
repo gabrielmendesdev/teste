@@ -47,7 +47,6 @@ const TableSection: React.FC = () => {
     try {
       setOpen(true)
       await new Promise(resolve => setTimeout(resolve, 2000));
-      setOpen(false)
       if (!category || value === "" || !data) {
         setCategoryError(!category);
         setValueError(value === "");
@@ -89,239 +88,263 @@ const TableSection: React.FC = () => {
       setValueError(false);
       setDataError(false);
       setDateErrorMessage("");
-
+      setOpen(false)
+      setLoading(false)
     } catch (error) {
       console.error("Erro ao adicionar dados:", error);
     } finally {
-      setLoading(false);
+      setOpen(false)
+      setLoading(false)
     }
   };
 
-  const excluirItem = (index: number) => {
-    const newDataList = [...dataList];
-    newDataList.splice(index, 1);
-    setDataList(newDataList);
-  };
-
-  const filteredDataList = dataList.filter((item) =>
-    item.category.toLowerCase().includes(searchValue.toLowerCase())
-  );
-
-  const editItem = (index: number) => {
-    if (editingMode) {
-      // Se já estiver no modo de edição, salve as alterações antes de editar outra linha
-      saveEditedItem(editingIndex || 0);
+  const deleteItem = async (index: number) => {
+    setLoading(true);
+    try {
+      setOpen(true)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      const newDataList = [...dataList];
+      newDataList.splice(index, 1);
+      setDataList(newDataList);
+      setOpen(false)
+      setLoading(false)
     }
-
-    setEditingMode(true);
-    setEditingIndex(index);
-    setEditingRow(dataList[index]);
-    setEditableCategory(dataList[index].category);
-    setEditableValue(dataList[index].value);
-    setEditableData(dataList[index].data);
-  };
-
-  const handleDateChange = (value: string) => {
-    setEditableData(value);
-    setEditingDateError(false);
-    setEditingDateErrorMessage("");
-
-    const dataInsert = new Date(value);
-    const dataLimit = new Date("2024-01-01");
-    const currentData = new Date();
-
-    if (!value) {
-      setEditingDateError(true);
-      setEditingDateErrorMessage("Campo obrigatório");
-    } else if (dataInsert < dataLimit) {
-      setEditingDateError(true);
-      setEditingDateErrorMessage("Data deve ser igual ou superior a 01/01/2024");
-    } else if (dataInsert > currentData) {
-      setEditingDateError(true);
-      setEditingDateErrorMessage("Data não pode ser maior do que hoje");
-    }
-  };
-
-  const saveEditedItem = (index: number) => {
-
-    const dataInsert = new Date(editableData);
-    const dataLimit = new Date("2024-01-01");
-
-    if (dataInsert < dataLimit) {
-      return;
-    }
-
-    const currentData = new Date();
-    if (dataInsert > currentData) {
-      return;
-    }
-
-    const newDataList = [...dataList];
-    newDataList[index] = {
-      category: editableCategory,
-      value: editableValue,
-      data: editableData,
+    catch (error) {
+      console.error("Erro ao adicionar dados:", error);
+    } finally {
+      setOpen(false)
+      setLoading(false)
     };
-    setDataList(newDataList);
-    setEditingMode(false);
-    setEditingIndex(null);
-    setEditingRow(null);
-    setEditableCategory("");
-    setEditableValue("");
-    setEditableData("");
+  }
+
+    const filteredDataList = dataList.filter((item) =>
+      item.category.toLowerCase().includes(searchValue.toLowerCase())
+    );
+
+    const editItem = (index: number) => {
+      if (editingMode) {
+        // Se já estiver no modo de edição, salve as alterações antes de editar outra linha
+        saveEditedItem(editingIndex || 0);
+      }
+
+      setEditingMode(true);
+      setEditingIndex(index);
+      setEditingRow(dataList[index]);
+      setEditableCategory(dataList[index].category);
+      setEditableValue(dataList[index].value);
+      setEditableData(dataList[index].data);
+    };
+
+    const handleDateChange = (value: string) => {
+      setEditableData(value);
+      setEditingDateError(false);
+      setEditingDateErrorMessage("");
+
+      const dataInsert = new Date(value);
+      const dataLimit = new Date("2024-01-01");
+      const currentData = new Date();
+
+      if (!value) {
+        setEditingDateError(true);
+        setEditingDateErrorMessage("Campo obrigatório");
+      } else if (dataInsert < dataLimit) {
+        setEditingDateError(true);
+        setEditingDateErrorMessage("Data deve ser igual ou superior a 01/01/2024");
+      } else if (dataInsert > currentData) {
+        setEditingDateError(true);
+        setEditingDateErrorMessage("Data não pode ser maior do que hoje");
+      }
+    };
+
+    const saveEditedItem = async (index: number) => {
+      try {
+        setOpen(true)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const dataInsert = new Date(editableData);
+        const dataLimit = new Date("2024-01-01");
+
+        if (dataInsert < dataLimit) {
+          return;
+        }
+
+        const currentData = new Date();
+        if (dataInsert > currentData) {
+          return;
+        }
+
+        const newDataList = [...dataList];
+        newDataList[index] = {
+          category: editableCategory,
+          value: editableValue,
+          data: editableData,
+        };
+        setDataList(newDataList);
+        setEditingMode(false);
+        setEditingIndex(null);
+        setEditingRow(null);
+        setEditableCategory("");
+        setEditableValue("");
+        setEditableData("");
+        setOpen(false)
+        setLoading(false)
+      } catch (error) {
+        console.error("Erro ao adicionar dados:", error);
+      } finally {
+        setOpen(false)
+        setLoading(false)
+      }
+    }
+
+    return (
+      <div>
+        <div>
+          <TextField
+            label="Category"
+            variant="standard"
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              setCategoryError(false);
+            }}
+            className="me-5 my-3"
+            error={categoryError}
+            helperText={categoryError && "Campo obrigatório"}
+          />
+          <TextField
+            label="Value"
+            variant="standard"
+            type="number"
+            value={value}
+            onChange={(e) => {
+              setValue((e.target as HTMLInputElement).valueAsNumber || "");
+              setValueError(false);
+            }}
+            className="me-5 my-3"
+            error={valueError}
+            helperText={valueError && "Campo obrigatório"}
+          />
+          <TextField
+            label="."
+            variant="standard"
+            type="date"
+            value={data}
+            onChange={(e) => {
+              setData(e.target.value);
+              setDataError(false);
+              setDateErrorMessage("");
+            }}
+            className="me-5 my-3"
+            error={dataError}
+            helperText={dataError && dateErrorMessage}
+          />
+          <Button
+            variant="outlined"
+            className="mx-1 mt-4"
+            onClick={addData}
+          >
+            {loading ? "Aguarde..." : "Adicionar"}
+          </Button>
+        </div>
+        <div>
+          <TextField
+            variant="standard"
+            fullWidth
+            label="Buscar..."
+            id="fullWidth"
+            className="mb-5"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+        </div>
+        <TableContainer component={Paper} className="bg-transparent">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell className="border-top-0">Category</TableCell>
+                <TableCell>Value</TableCell>
+                <TableCell>Data</TableCell>
+                <TableCell>Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredDataList.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    {editingIndex === index ? (
+                      <TextField
+                        value={editableCategory}
+                        onChange={(e) => setEditableCategory(e.target.value)}
+                        error={!editableCategory}
+                        helperText={!editableCategory && "Campo obrigatório"}
+                        required
+                      />
+                    ) : (
+                      item.category
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    {editingIndex === index ? (
+                      <TextField
+                        value={editableValue}
+                        onChange={(e) => setEditableValue(e.target.value)}
+                        error={editableValue === ""}
+                        helperText={editableValue === "" && "Campo obrigatório"}
+                        required
+                      />
+                    ) : (
+                      item.value
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    {editingIndex === index ? (
+                      <TextField
+                        type="date"
+                        value={editableData}
+                        onChange={(e) => handleDateChange(e.target.value)}
+                        error={editingDateError}
+                        helperText={editingDateError && editingDateErrorMessage}
+                        required
+                      />
+                    ) : (
+                      item.data
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {editingIndex === index ? (
+                      <Button
+                        variant="outlined"
+                        className="mx-1"
+                        onClick={() => saveEditedItem(index)}
+                      >
+                        Salvar
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outlined"
+                        className="mx-1"
+                        onClick={() => editItem(index)}
+                      >
+                        Editar
+                      </Button>
+                    )}
+                    <Button
+                      variant="outlined"
+                      className="mx-1"
+                      onClick={() => deleteItem(index)}
+                    >
+                      Excluir
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <LoadingModal open={open} />
+      </div>
+    );
   };
 
-
-  return (
-    <div>
-      <div>
-        <TextField
-          label="Category"
-          variant="standard"
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-            setCategoryError(false);
-          }}
-          className="me-5 my-3"
-          error={categoryError}
-          helperText={categoryError && "Campo obrigatório"}
-        />
-        <TextField
-          label="Value"
-          variant="standard"
-          type="number"
-          value={value}
-          onChange={(e) => {
-            setValue((e.target as HTMLInputElement).valueAsNumber || "");
-            setValueError(false);
-          }}
-          className="me-5 my-3"
-          error={valueError}
-          helperText={valueError && "Campo obrigatório"}
-        />
-        <TextField
-          label="."
-          variant="standard"
-          type="date"
-          value={data}
-          onChange={(e) => {
-            setData(e.target.value);
-            setDataError(false);
-            setDateErrorMessage("");
-          }}
-          className="me-5 my-3"
-          error={dataError}
-          helperText={dataError && dateErrorMessage}
-        />
-        <Button
-          variant="outlined"
-          className="mx-1 mt-4"
-          onClick={addData}
-        >
-          {loading ? "Aguarde..." : "Adicionar"}
-        </Button>
-      </div>
-      <div>
-        <TextField
-          variant="standard"
-          fullWidth
-          label="Buscar..."
-          id="fullWidth"
-          className="mb-5"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-        />
-      </div>
-      <TableContainer component={Paper} className="bg-transparent">
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell className="border-top-0">Category</TableCell>
-              <TableCell>Value</TableCell>
-              <TableCell>Data</TableCell>
-              <TableCell>Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredDataList.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  {editingIndex === index ? (
-                    <TextField
-                      value={editableCategory}
-                      onChange={(e) => setEditableCategory(e.target.value)}
-                      error={!editableCategory}
-                      helperText={!editableCategory && "Campo obrigatório"}
-                      required
-                    />
-                  ) : (
-                    item.category
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <TextField
-                      value={editableValue}
-                      onChange={(e) => setEditableValue(e.target.value)}
-                      error={editableValue === ""}
-                      helperText={editableValue === "" && "Campo obrigatório"}
-                      required
-                    />
-                  ) : (
-                    item.value
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <TextField
-                      type="date"
-                      value={editableData}
-                      onChange={(e) => handleDateChange(e.target.value)}
-                      error={editingDateError}
-                      helperText={editingDateError && editingDateErrorMessage}
-                      required
-                    />
-                  ) : (
-                    item.data
-                  )}
-                </TableCell>
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Button
-                      variant="outlined"
-                      className="mx-1"
-                      onClick={() => saveEditedItem(index)}
-                    >
-                      Salvar
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outlined"
-                      className="mx-1"
-                      onClick={() => editItem(index)}
-                    >
-                      Editar
-                    </Button>
-                  )}
-                  <Button
-                    variant="outlined"
-                    className="mx-1"
-                    onClick={() => excluirItem(index)}
-                  >
-                    Excluir
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <LoadingModal open={open} />
-    </div>
-  );
-};
-
-export default TableSection;
+  export default TableSection;
