@@ -6,10 +6,10 @@ import PageContent from '../../components/pagecontent';
 const Dashboards: React.FC = () => {
   return (
     <div className="dashboards">
-      <Header />
+      <Header title='Dashboards'/>
       <div className='d-flex flex-grow-1'>
         <SideNavigationBar />
-        <PageContent />
+        <PageContent title='Dashboards' />
       </div>
     </div>
   );

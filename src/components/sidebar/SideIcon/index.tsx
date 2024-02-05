@@ -1,6 +1,3 @@
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import GroupIcon from '@mui/icons-material/Group';
-
 interface SideIconProps {
   children: React.ReactNode;
 }

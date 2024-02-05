@@ -80,12 +80,6 @@ const Nav: React.FC = () => {
             })}
           </div>
         </div>
-        <div className="footer">
-          <a href="#">Instagram</a>
-          <a href="#">Facebook</a>
-          <a href="#">Email</a>
-          <a href="#">Whatsapp</a>
-        </div>
       </div>
       <CurveSvg />
     </motion.div>

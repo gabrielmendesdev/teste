@@ -15,7 +15,11 @@ import "./styles.css";
 
 const settings = ["Usuário Admnistrador", "Meus Dados", "Alterar Senha", "Sair"];
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  title: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ title }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
@@ -44,11 +48,11 @@ const Header: React.FC = () => {
       <AnimatePresence mode="wait">{isActive && <Nav />}</AnimatePresence>
       <div className="d-flex justify-content-between w-100">
         <Title className="text-light header-title m-0 ms-4 d-flex align-items-center">
-          Trykat - Dashboard
+          Trykat - {title}
         </Title>
         <Tooltip title="Open settings" className="me-4">
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-            <Avatar sx={{ width: 70, height: 70 }}>G</Avatar>
+            <Avatar sx={{ width: 52, height: 52 }}>G</Avatar>
           </IconButton>
         </Tooltip>
         <Menu

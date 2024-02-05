@@ -4,5 +4,11 @@
 
 .module-container {
     width: 100%;
-    padding: 5rem;
+    padding: 3rem;
+}
+
+@media(max-width: 768px) {
+    .module-container{
+        padding: 1rem;
+    }
 }
